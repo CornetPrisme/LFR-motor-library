@@ -18,25 +18,29 @@ void setup() {
 }
 
 void loop() {
-    // 1. Avancer les deux roues à mi-vitesse
-    Serial.println("Avance...");
+    // Avancer les deux roues à mi-vitesse
     bothMotors.set_speed(128);
     delay(2000);
 
-    // 2. Tourner sur place : roue gauche en avant, roue droite en arrière
-    Serial.println("Rotation...");
+    // Arrêt complet
+    bothMotors.set_speed(0);
+    delay(2000);
+
+    // Tourner sur place : roue gauche en avant, roue droite en arrière
     leftMotor.set_speed(150);
     rightMotor.set_speed(-150);
     delay(1000);
 
-    // 3. Arrêter uniquement la roue droite (tourner autour de la roue droite)
-    Serial.println("Pivot...");
+    // Arrêt complet
+    bothMotors.set_speed(0);
+    delay(2000);
+
+    // Arrêter uniquement la roue droite (tourner autour de la roue droite)
     rightMotor.set_speed(0);
     leftMotor.set_speed(100);
     delay(1000);
 
-    // 4. Arrêt complet
-    Serial.println("Stop.");
+    // Arrêt complet
     bothMotors.set_speed(0);
-    delay(3000);
+    delay(10000);
 }
