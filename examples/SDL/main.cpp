@@ -2,10 +2,12 @@
 #include "CanManager.h"
 #include "LFR-MotorLibrary.h"
 
+#define SPEED 130
+
 CanManager can;
 
-MotorDriver rightMotor(&can, 0);
-MotorDriver leftMotor(&can, 1);
+MotorDriver rightMotor(&can, 1);
+MotorDriver leftMotor(&can, 0);
 
 enum class line_pos_state_t : uint8_t {
     LOST = 0,
@@ -37,10 +39,10 @@ void on_line_sensor_received(t_line_sensor_data msg) {
 
     MoveState next_state;
 
-    if (pos > 1500) { 
+    if (pos > 1000) { 
         next_state = MoveState::TURN_RIGHT;
     } 
-    else if (pos < -1500) { 
+    else if (pos < -1000) { 
         next_state = MoveState::TURN_LEFT;
     } 
     else { 
@@ -51,16 +53,16 @@ void on_line_sensor_received(t_line_sensor_data msg) {
         current_state = next_state;
 
         if (current_state == MoveState::TURN_RIGHT) {
-            leftMotor.set_speed(150);
+            leftMotor.set_speed(SPEED);
             rightMotor.set_speed(0);
         } 
         else if (current_state == MoveState::TURN_LEFT) {
             leftMotor.set_speed(0);
-            rightMotor.set_speed(150);
+            rightMotor.set_speed(SPEED);
         } 
         else if (current_state == MoveState::FORWARD) {
-            leftMotor.set_speed(150);
-            rightMotor.set_speed(150);
+            leftMotor.set_speed(SPEED);
+            rightMotor.set_speed(SPEED);
         }
     }
 }
