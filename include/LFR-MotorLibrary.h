@@ -1,36 +1,29 @@
-#include <Arduino.h>
-#include "CanMessages.h"
+#pragma once
+#include "CanManager.h"
+
+CAN_STRUCT(MOTOR, 291, 
+    uint8_t motor_id;
+    int16_t speed;        
+)
 
 class MotorDriver {
-    private:
-        CanManager* can;
-        motor_id_t motor_id;
-    public:
-        // Constructeur
-        MotorDriver(CanManager* can_manager, motor_id_t id);
+private:
+    CanManager* _can;
+    uint8_t _motor_id;
+public:
+    MotorDriver(CanManager* can, uint8_t motor_id) {
+        _can = can;
+        _motor_id = motor_id;
+    }
 
-        void init();
-        void set_speed(int16_t speed);
+    void set_speed(int16_t speed) {
+        MOTOR msg;
+        msg.motor_id = _motor_id;
+        msg.speed = speed;
+        _can->send(msg);
+    }
+
+    void init() {
+        set_speed(0);
+    }
 };
-
-MotorDriver::MotorDriver(CanManager* can_manager, motor_id_t id) {
-    this->can = can_manager;
-    this->motor_id = id;
-}
-
-void MotorDriver::set_speed(int16_t speed) {
-    MOTOR cmd; 
-    cmd.motor_id = this->motor_id;
-    cmd.launch = false;
-    cmd.speed = speed;
-
-    this->can->send(cmd);
-}
-
-void MotorDriver::init() {
-    MOTOR cmd; 
-    cmd.motor_id = this->motor_id;
-    cmd.launch = true;
-
-    this->can->send(cmd);
-}
